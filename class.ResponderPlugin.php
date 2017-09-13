@@ -19,7 +19,7 @@ class ResponderPlugin extends Plugin {
    *
    * @var boolean
    */
-  const DEBUG = TRUE;
+  const DEBUG = FALSE;
 
   /**
    * The name that appears in threads
@@ -66,8 +66,9 @@ class ResponderPlugin extends Plugin {
     }
 
     // eg: 1902, or 912 or 2344
-    $now = (int) $this->getDate('Hi');
-    $day_of_week = $this->getDate('w');
+    $time = Misc::dbtime();
+    $now = (int) date('Hi', $time);
+    $day_of_week = date('w', $time);
 
     // Parse the configuration for today:
     list ($start, $end) = explode('-', $config->get('day-' . $day_of_week));
@@ -84,29 +85,16 @@ class ResponderPlugin extends Plugin {
     // Make em numbers, for comparisons
     $start = (int) $start;
     // If they put ????-0000, assume they mean ????-2359
-    $end = (int) ($end == '0000') ? '2359' : $end;
+    if ($end == '0000') {
+      $end = '2359';
+    }
+    $end = (int) $end;
 
-    // Check that now is between the start and end times
-    if ($start < $now && $end > $now) {
+    // Check that now is outside the start and end times
+    if ($now < $start || $now > $end) {
       return TRUE;
     }
     return FALSE;
-  }
-
-  /**
-   * The Format::date() function didn't work so well.. copied out the bit that
-   * might work here.
-   *
-   * @param unknown $format
-   */
-  private function getDate($format) {
-    // Figure out timezone offset for given timestamp
-    $datetime = DateTime::createFromFormat('U', time());
-    $timezone = $datetime->getTimeZone();
-    $timestamp = $datetime->format('U');
-    $time = DateTime::createFromFormat('U', $timestamp, new DateTimeZone('UTC'));
-    $timestamp += $timezone->getOffset($time);
-    return date($format, $timestamp);
   }
 
   /**
