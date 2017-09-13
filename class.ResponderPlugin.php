@@ -55,11 +55,22 @@ class ResponderPlugin extends Plugin {
    * @return boolean
    */
   private function is_time_to_run(PluginConfig $config) {
+    if ($config->get('response') == 0) {
+      if (self::DEBUG) {
+        error_log("Configured with no response.");
+      }
+      return FALSE;
+    }
+
     // eg: 1902, or 912 or 2344
     $now = (int) date('Hi');
 
     // Parse the configuration for today:
     list ($start, $end) = explode('-', $config->get('day-' . date('w')));
+
+    if(self::DEBUG){
+      error_log("Testing today $now against start: $start and end: $end");
+    }
 
     // Compare the exact string values stored, if both zeros, the whole day we're shut
     if ($start == '0000' && $end == '0000') {

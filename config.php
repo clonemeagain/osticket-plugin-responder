@@ -4,18 +4,19 @@ require_once INCLUDE_DIR . 'class.translation.php';
 
 class ResponderPluginConfig extends PluginConfig {
 
-  const days = [
-      0 => __('Sunday'),
-      1 => __('Monday'),
-      2 => __('Tuesday'),
-      3 => __('Wednesday'),
-      4 => __('Thursday'),
-      5 => __('Friday'),
-      6 => __('Saturday')
-  ];
+  private $days;
 
   function pre_save($config, &$errors) {
-    foreach (self::days as $day => $day_name) {
+    $this->days = [
+        0 => __('Sunday'),
+        1 => __('Monday'),
+        2 => __('Tuesday'),
+        3 => __('Wednesday'),
+        4 => __('Thursday'),
+        5 => __('Friday'),
+        6 => __('Saturday')
+    ];
+    foreach ($this->days as $day => $day_name) {
       $times = $config['day-' . $day];
       if (strpos($times, '-') === FALSE || strlen($times) !== 9) {
         $errors['err'] = __(
@@ -44,7 +45,15 @@ class ResponderPluginConfig extends PluginConfig {
    * @see PluginConfig::getOptions()
    */
   function getOptions() {
-
+    $this->days = [
+        0 => __('Sunday'),
+        1 => __('Monday'),
+        2 => __('Tuesday'),
+        3 => __('Wednesday'),
+        4 => __('Thursday'),
+        5 => __('Friday'),
+        6 => __('Saturday')
+    ];
     // Get all the canned responses to use as responses (might want to just use a textbox)
     $responses = Canned::getCannedResponses();
     $responses['0'] = __('Send no Reply');
@@ -56,24 +65,24 @@ class ResponderPluginConfig extends PluginConfig {
             'Select a canned response to use as a reply when the office is closed, configure in /scp/canned.php'),
           'choices' => $responses
       ]);
-    $day_configs['sender'] = new ChoiceField(
+    $day_configs['sender'] = new TextboxField(
       [
           'label' => __('Sender Username'),
-          'default' => 0,
+          'default' => '1',
           'hint' => __(
             'Enter the username/id/email of Agent who will be sending the messages.')
       ]);
-    foreach (self::days as $day => $day_name) {
+    foreach ($this->days as $day => $day_name) {
       $day_configs['day-' . $day] = new TextboxField(
         [
             'label' => $day_name,
             'hint' => __(
               'Enter hours open only, in 24hr hyphenated format, or leave as 0000-0000 for closed all day. '),
-            'default' => ($day !== 0 || $day !== 6) ? '0900-1700' : '0000-0000',
+            'default' => ($day == 0 || $day == 6) ? '0000-0000' : '0900-1700',
             'configuration' => [
                 'html' => FALSE,
-                'size' => 100,
-                'length' => 100
+                'size' => 10,
+                'length' => 9
             ]
         ]);
     }
