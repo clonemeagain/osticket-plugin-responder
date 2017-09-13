@@ -3,7 +3,7 @@
  * @file class.ResponderPlugin.php :: Requires PHP5.6+
  *
  * @author Grizly <clonemeagain@gmail.com>
- * @see https://github.com/clonemeagain/plugin-autoresponder
+ * @see https://github.com/clonemeagain/osticket-plugin-responder
  */
 require_once 'config.php';
 

@@ -16,12 +16,19 @@ class ResponderPluginConfig extends PluginConfig {
 
   function pre_save($config, &$errors) {
     foreach (self::days as $day => $day_name) {
-      list ($start, $end) = explode('-', $config['day-' . $day]);
+      $times = $config['day-' . $day];
+      if (strpos($times, '-') === FALSE || strlen($times) !== 9) {
+        $errors['err'] = __(
+          'Invalid time format, use 0000-0000 format for ' . $day_name);
+        return FALSE;
+      }
+      list ($start, $end) = explode('-', $times);
       if ($start == '0000' && $end == '0000') {
         // peachy.
       }
       if ((int) $end > (int) $start) {
-        $errors['err'] = __("Invalid end time, can't be before start.");
+        $errors['err'] = __(
+          "Invalid end time, can't be before start for $day_name.");
         return FALSE;
       }
       //TODO: Come up with better validators.
