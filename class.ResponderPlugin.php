@@ -66,10 +66,11 @@ class ResponderPlugin extends Plugin {
     }
 
     // eg: 1902, or 912 or 2344
-    $now = (int) date('Hi');
+    $now = (int) $this->getDate('Hi');
+    $day_of_week = $this->getDate('w');
 
     // Parse the configuration for today:
-    list ($start, $end) = explode('-', $config->get('day-' . date('w')));
+    list ($start, $end) = explode('-', $config->get('day-' . $day_of_week));
 
     if (self::DEBUG) {
       error_log("Testing today $now against start: $start and end: $end");
@@ -90,6 +91,22 @@ class ResponderPlugin extends Plugin {
       return TRUE;
     }
     return FALSE;
+  }
+
+  /**
+   * The Format::date() function didn't work so well.. copied out the bit that
+   * might work here.
+   *
+   * @param unknown $format
+   */
+  private function getDate($format) {
+    // Figure out timezone offset for given timestamp
+    $datetime = DateTime::createFromFormat('U', time());
+    $timezone = $datetime->getTimeZone();
+    $timestamp = $datetime->format('U');
+    $time = DateTime::createFromFormat('U', $timestamp, new DateTimeZone('UTC'));
+    $timestamp += $timezone->getOffset($time);
+    return date($format, $timestamp);
   }
 
   /**
