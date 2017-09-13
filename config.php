@@ -27,7 +27,7 @@ class ResponderPluginConfig extends PluginConfig {
       if ($start == '0000' && $end == '0000') {
         // peachy.
       }
-      if ((int) $end > (int) $start) {
+      if ((int) $end < (int) $start) {
         $errors['err'] = __(
           "Invalid end time, can't be before start for $day_name.");
         return FALSE;

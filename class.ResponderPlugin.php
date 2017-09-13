@@ -40,6 +40,9 @@ class ResponderPlugin extends Plugin {
     // Listen for ticket created Signal
     Signal::connect('ticket.created',
       function ($ticket) {
+        if (self::DEBUG) {
+          error_log("Signal received.");
+        }
         // Get the admin config & the date, compare the two.
         $config = $this->getConfig();
         if ($this->is_time_to_run($config)) {
@@ -68,7 +71,7 @@ class ResponderPlugin extends Plugin {
     // Parse the configuration for today:
     list ($start, $end) = explode('-', $config->get('day-' . date('w')));
 
-    if(self::DEBUG){
+    if (self::DEBUG) {
       error_log("Testing today $now against start: $start and end: $end");
     }
 
