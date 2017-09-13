@@ -4,10 +4,8 @@ require_once INCLUDE_DIR . 'class.translation.php';
 
 class ResponderPluginConfig extends PluginConfig {
 
-  private $days;
-
-  function pre_save($config, &$errors) {
-    $this->days = [
+  private function days(){
+    return [
         0 => __('Sunday'),
         1 => __('Monday'),
         2 => __('Tuesday'),
@@ -16,7 +14,10 @@ class ResponderPluginConfig extends PluginConfig {
         5 => __('Friday'),
         6 => __('Saturday')
     ];
-    foreach ($this->days as $day => $day_name) {
+  }
+
+  function pre_save($config, &$errors) {
+    foreach ($this->days() as $day => $day_name) {
       $times = $config['day-' . $day];
       if (strpos($times, '-') === FALSE || strlen($times) !== 9) {
         $errors['err'] = __(
@@ -45,15 +46,6 @@ class ResponderPluginConfig extends PluginConfig {
    * @see PluginConfig::getOptions()
    */
   function getOptions() {
-    $this->days = [
-        0 => __('Sunday'),
-        1 => __('Monday'),
-        2 => __('Tuesday'),
-        3 => __('Wednesday'),
-        4 => __('Thursday'),
-        5 => __('Friday'),
-        6 => __('Saturday')
-    ];
     // Get all the canned responses to use as responses (might want to just use a textbox)
     $responses = Canned::getCannedResponses();
     $responses['0'] = __('Send no Reply');
@@ -72,7 +64,7 @@ class ResponderPluginConfig extends PluginConfig {
           'hint' => __(
             'Enter the username/id/email of Agent who will be sending the messages.')
       ]);
-    foreach ($this->days as $day => $day_name) {
+    foreach ($this->days() as $day => $day_name) {
       $day_configs['day-' . $day] = new TextboxField(
         [
             'label' => $day_name,
