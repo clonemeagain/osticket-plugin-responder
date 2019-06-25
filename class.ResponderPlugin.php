@@ -107,8 +107,7 @@ class ResponderPlugin extends Plugin {
    */
   private function post_reply(Ticket $ticket, PluginConfig $config) {
     $robot = Staff::lookup($config->get('sender'));
-    $reply = Canned::lookup($config->get('response'))->getFormattedResponse(
-      'html');
+    $reply = Canned::lookup($config->get('response'));
 
     // We need to override this for the notifications
     global $thisstaff;
@@ -120,17 +119,18 @@ class ResponderPlugin extends Plugin {
     $thisstaff = $robot;
 
     // Replace any ticket variables in the message:
-    $variables = [
-        'recipient' => $ticket->getOwner()
-    ];
+//     $variables = [
+//         'recipient' => $ticket->getOwner()
+//     ];
 
-    $vars = [
-        'response' => $ticket->replaceVars($reply, $variables)
-    ];
-    $errors = [];
+//     $vars = [
+//         'response' => $ticket->replaceVars($reply, $variables)
+//     ];
+//     $errors = [];
+    $msg = $ticket->getThreadId();
 
     // Send the alert without claiming the ticket on our assignee's behalf.
-    if (! $sent = $ticket->postReply($vars, $errors, TRUE, FALSE)) {
+    if (! $sent = $ticket->postCannedReply($reply,$msg,true)) {
       $ticket->LogNote(__('Error Notification'),
         __('We were unable to post a reply to the ticket creator.'),
         self::PLUGIN_NAME, FALSE);
