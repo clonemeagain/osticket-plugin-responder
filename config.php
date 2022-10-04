@@ -16,7 +16,7 @@ class ResponderPluginConfig extends PluginConfig {
     ];
   }
 
-  function pre_save($config, &$errors) {
+  function pre_save(&$config, &$errors) {
     foreach ($this->days() as $day => $day_name) {
       $times = $config['day-' . $day];
       if (strpos($times, '-') === FALSE || strlen($times) !== 9) {

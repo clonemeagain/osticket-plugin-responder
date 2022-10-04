@@ -147,7 +147,7 @@ class ResponderPlugin extends Plugin {
    *
    * @see Plugin::uninstall()
    */
-  function uninstall() {
+  function uninstall(&$errors) {
     $errors = array();
     global $ost;
     // Send an alert to the system admin:
