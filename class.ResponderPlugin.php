@@ -186,10 +186,12 @@ class ResponderPlugin extends Plugin {
   /**
    * New function to get the configuration instance.
    */
-  function getConfig() {
+  function getConfig(?PluginInstance $instance = null, $defaults = []) {
     if (!$this->config) {
-        $this->config = new ResponderConfig($this->getId());
+        $this->config = new ResponderPluginConfig($this->getId());
     }
     return $this->config;
   }
+
+
 }
