@@ -5,8 +5,8 @@
  * @  multi-instance: yes
  * @author Grizly <clonemeagain@gmail.com>
  * @see https://github.com/clonemeagain/osticket-plugin-responder
- * @fork by Cartmega <www.cartmega.com>
- * @see https://github.com/Cartmega/plugin-autocloser 
+ * @fork by HairyDuck 
+ * @see https://github.com/HairyDuck/osticket-plugin-responder
  */
 require_once 'config.php';
 
