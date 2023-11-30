@@ -80,4 +80,14 @@ class ResponderPluginConfig extends PluginConfig {
     }
     return $day_configs;
   }
+
+  /**
+   * New function to get the configuration instance.
+   */
+  function getConfig() {
+    if (!$this->config) {
+        $this->config = new ResponderConfig($this->getId());
+    }
+    return $this->config;
+  }
 }

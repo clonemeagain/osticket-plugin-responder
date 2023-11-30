@@ -1,9 +1,12 @@
 <?php
 /**
  * @file class.ResponderPlugin.php :: Requires PHP5.6+
- *
+*  @  requires osTicket 1.17+ & PHP8.0+
+ * @  multi-instance: yes
  * @author Grizly <clonemeagain@gmail.com>
  * @see https://github.com/clonemeagain/osticket-plugin-responder
+ * @fork by HairyDuck 
+ * @see https://github.com/HairyDuck/osticket-plugin-responder
  */
 require_once 'config.php';
 
@@ -22,6 +25,14 @@ class ResponderPlugin extends Plugin {
   const DEBUG = FALSE;
 
   /**
+   * Keeps all log entries for each run
+   * for output to syslog
+   *
+   * @var array
+   */
+  private $LOG = array();
+
+  /**
    * The name that appears in threads
    *
    * @var string
@@ -37,6 +48,14 @@ class ResponderPlugin extends Plugin {
    * @see Plugin::bootstrap()
    */
   public function bootstrap() {
+
+    // ---------------------------------------------------------------------
+    // Fetch the config
+    // ---------------------------------------------------------------------
+    // Save config and instance for use later in the signal, when it is called
+    $config = $this->getConfig();
+    $instance = $this->getConfig()->instance;
+
     // Listen for ticket created Signal
     Signal::connect('ticket.created',
       function ($ticket) {
@@ -163,4 +182,16 @@ class ResponderPlugin extends Plugin {
   public function getForm() {
     return array();
   }
+
+  /**
+   * New function to get the configuration instance.
+   */
+  function getConfig(?PluginInstance $instance = null, $defaults = []) {
+    if (!$this->config) {
+        $this->config = new ResponderPluginConfig($this->getId());
+    }
+    return $this->config;
+  }
+
+
 }
